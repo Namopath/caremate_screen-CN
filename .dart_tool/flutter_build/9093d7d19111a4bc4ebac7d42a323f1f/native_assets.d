@@ -1,0 +1,1 @@
+ E:\\Flutter\\caremate_screen\ -\ CN\\.dart_tool\\flutter_build\\9093d7d19111a4bc4ebac7d42a323f1f\\native_assets.yaml: 

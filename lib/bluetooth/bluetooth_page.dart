@@ -33,7 +33,9 @@ class BleController extends GetxController{
   }
   Future? connectDevice(BluetoothDevice device) async{
     connectionStatus.value = 'connecting';
-      await device?.connect(timeout: Duration(seconds: 15));
+    update();
+    await device?.connect(timeout: Duration(seconds: 15));
+    connectionStatus.value = 'connected';
     connectedDevice = device;
     await discoverServices(device);
     update();
@@ -44,10 +46,11 @@ class BleController extends GetxController{
         connectionStatus.value = 'connecting';
       }
       if(isConnected == BluetoothDeviceState.connected){
-        connectionStatus.value = '';
+        connectionStatus.value = 'connected';
         print('Connected to $device_name');
       }else if (isConnected == BluetoothDeviceState.disconnected){
-        connectionStatus.value = '';
+        connectionStatus.value = 'disconnected';
+        update();
         print('Disconnected');
       }
     });
@@ -75,6 +78,8 @@ class Ble_page extends StatefulWidget{
 class _Ble_pageState extends State<Ble_page> {
   OverlayEntry? entry;
   AIStatusController AI_Status = Get.find<AIStatusController>();
+  bool isConnecting = false;
+  BleController controller = Get.find<BleController>();
 
   void ShowSetEvent1(){
     final overlay = Overlay.of(context);
@@ -115,7 +120,7 @@ class _Ble_pageState extends State<Ble_page> {
   );
 
   String connectionStatus = '';
-  late BleController controller;
+  // late BleController controller;
 
   void initState() {
     super.initState();
@@ -203,66 +208,66 @@ class _Ble_pageState extends State<Ble_page> {
                       color: Colors.white,
                     ),
                     child: StreamBuilder<List<ScanResult>>(
-                            stream: controller.ScanResults,
-                            builder: (context,snapshot){
-                              if(snapshot.hasData){
-                                final filteredResults = snapshot.data!.where(
-                                        (result) => result.device.name.contains("CareMate")
-                                ).toList();
-                                if(filteredResults.isEmpty){
-                                  return Center(
-                                    child: Text("We are unable to find CareMate"),
-                                  );
-                                }
-                                return ListView.builder(
-                                    itemCount: filteredResults.length,
-                                    itemBuilder: (context, index){
-                                      final data = filteredResults[index];
-                                      return Padding(
-                                        padding: EdgeInsets.fromLTRB(20.w,10.h,20.w,0),
-                                        child: GestureDetector(
-                                          onTap: () async{
-                                            await controller.connectDevice(data.device);
-                                            if(controller.connectedDevice != null){
-                                              ShowSetEvent1();
-                                            }
-                                          },
-                                          child: Container(
-                                            width: 300.w,
-                                            height: 62.h,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(12.r),
-                                              color: HexColor('#5490FE'),
+                        stream: controller.ScanResults,
+                        builder: (context,snapshot){
+                          if(snapshot.hasData){
+                            final filteredResults = snapshot.data!.where(
+                                    (result) => result.device.name.contains("CareMate")
+                            ).toList();
+                            if(filteredResults.isEmpty){
+                              return Center(
+                                child: Text("We are unable to find CareMate"),
+                              );
+                            }
+                            return ListView.builder(
+                                itemCount: filteredResults.length,
+                                itemBuilder: (context, index){
+                                  final data = filteredResults[index];
+                                  return Padding(
+                                    padding: EdgeInsets.fromLTRB(20.w,10.h,20.w,0),
+                                    child: GestureDetector(
+                                      onTap: () async{
+                                        await controller.connectDevice(data.device);
+                                        if(controller.connectedDevice != null){
+                                          ShowSetEvent1();
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 300.w,
+                                        height: 62.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          color: HexColor('#5490FE'),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(data.device.name.isNotEmpty
+                                              ? data.device.name
+                                              : "Unknown Device",
+                                            style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontFamily: 'Montserrat_bold',
+                                                color: Colors.white
                                             ),
-                                            child: ListTile(
-                                              title: Text(data.device.name.isNotEmpty
-                                                  ? data.device.name
-                                                  : "Unknown Device",
-                                                style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontFamily: 'Montserrat_bold',
-                                                    color: Colors.white
-                                                ),
-                                              ),
-                                              subtitle: Text(data.device.id.id,
-                                                style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontFamily: 'Montserrat_bold',
-                                                    color: Colors.white
-                                                ),
-                                              ),
+                                          ),
+                                          subtitle: Text(data.device.id.id,
+                                            style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontFamily: 'Montserrat_bold',
+                                                color: Colors.white
                                             ),
                                           ),
                                         ),
-                                      );
-                                    }
-                                );
-                              }else{
-                                return Center(
-                                  child: Text('No nearby devices'),
-                                );
-                              }
-                            }),
+                                      ),
+                                    ),
+                                  );
+                                }
+                            );
+                          }else{
+                            return Center(
+                              child: Text('No nearby devices'),
+                            );
+                          }
+                        }),
 
                   ),
                 ],

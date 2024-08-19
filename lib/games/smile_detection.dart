@@ -174,17 +174,9 @@ class _SmileDetectionState extends State<SmileDetection> {
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: "Montserrat_bold",
-                          fontSize: 14.sp,
+                          fontSize: 28.sp,
                         ),
                       ),
-                    ),Text(
-                      "Smile for the\ncamera to earn points!",
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontFamily: "Montserrat_semibold",
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
                     )
                   ],
                 ),

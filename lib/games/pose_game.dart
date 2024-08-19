@@ -341,20 +341,12 @@ class _PosturePerfectState extends State<PosturePerfect> {
                     Padding(
                       padding: EdgeInsets.only(top: 20),
                       child: Text("Score: $score",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Montserrat_bold",
-                        fontSize: 14.sp,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Montserrat_bold",
+                          fontSize: 28.sp,
+                        ),
                       ),
-                      ),
-                    ),Text(
-                        "The pose detection algorithm will detect movement",
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontFamily: "Montserrat_semibold",
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
                     )
                   ],
                 ),

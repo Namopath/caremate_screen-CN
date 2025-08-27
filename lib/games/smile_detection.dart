@@ -59,6 +59,7 @@ class _SmileDetectionState extends State<SmileDetection> {
     final camera = cameras[1];
     width = image.width.toInt();
     height = image.height.toInt();
+    print("Width:Height ${width}:${height}");
     final WriteBuffer allBytes = WriteBuffer();
     for (final Plane plane in image.planes){
       allBytes.putUint8List(plane.bytes);
@@ -66,13 +67,14 @@ class _SmileDetectionState extends State<SmileDetection> {
     final bytes = allBytes.done().buffer.asUint8List();
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
-
+    print("Sensor orientation: ${camera.sensorOrientation}");
     final imageRotation = InputImageRotationValue.fromRawValue(camera.sensorOrientation);
     if(imageRotation == null){
       print('Rotation is null');
       return;
     }
     final inputImageFormat = InputImageFormatValue.fromRawValue(image.format.raw);
+    print("Image format: $inputImageFormat");
     if (inputImageFormat == null){
       print('Format is null');
       return;
@@ -92,11 +94,11 @@ class _SmileDetectionState extends State<SmileDetection> {
   }
 
   Future<void> faceModel(InputImage input) async {
+
     if(!canProcess) return;
     if(isBusy) return;
     isBusy = true;
     final faces = await faceDetector.processImage(input);
-
     if(faces.isNotEmpty){
       print("Face detected");
       // final face = faces.first();

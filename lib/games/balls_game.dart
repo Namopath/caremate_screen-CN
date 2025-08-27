@@ -24,6 +24,7 @@ class _ColorGameState extends State<ColorGame> {
   final bleController = Get.find<BleController>();
   String mode = "CC";
   String modeExit = "O";
+  String prevData = "";
 
   @override
   void initState() {
@@ -164,25 +165,26 @@ class _ColorGameState extends State<ColorGame> {
                 await characteristic.setNotifyValue(true);
                 characteristic.value.listen((data) {
                   print("Received: ${utf8.decode(data)}");
-                  if(utf8.decode(data) == 'C-1'){
+                  if(utf8.decode(data) == 'C-1' && utf8.decode(data) != prevData){
                     setState(() {
                       red+=1;
                     });
                     // Future.delayed(Duration(seconds: 2));
                     // Lpressed = false;
                   }
-                  if(utf8.decode(data) == 'C-2'){
+                  if(utf8.decode(data) == 'C-2' && utf8.decode(data) != prevData){
                     setState(() {
                       green+=1;
                     });
                     // Future.delayed(Duration(seconds: 2));
                     // Lpressed = false;
                   }
-                  if(utf8.decode(data) == 'C-3'){
+                  if(utf8.decode(data) == 'C-3' && utf8.decode(data) != prevData){
                     setState(() {
                       blue+=1;
                     });
                   }
+                  prevData = utf8.decode(data);
                 });
               } catch(e){
                 print("Error: $e");
